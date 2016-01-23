@@ -65,8 +65,6 @@ public class home extends AppCompatActivity
         imageFragmentPagerAdapter = new ImageFragmentPagerAdapter(getSupportFragmentManager());
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setAdapter(imageFragmentPagerAdapter);
-        Activity test = (Activity) this;
-        // ((AppCompatActivity)test).setSupportActionBar(toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

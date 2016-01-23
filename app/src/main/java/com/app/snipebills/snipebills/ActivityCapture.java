@@ -5,18 +5,26 @@
 package com.app.snipebills.snipebills;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -28,17 +36,22 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.manateeworks.BarcodeScanner;
 import com.manateeworks.BarcodeScanner.MWLocation;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.zip.Inflater;
 
 /**
  * The barcode reader activity itself. This is loosely based on the
  * CameraPreview example included in the Android SDK.  ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks
  */
-public class ActivityCapture extends Activity implements SurfaceHolder.Callback {
+public class ActivityCapture extends AppCompatActivity implements SurfaceHolder.Callback,
+        NavigationView.OnNavigationItemSelectedListener {
 
     public static final boolean USE_MWANALYTICS = false;
     public static final boolean PDF_OPTIMIZED = false;
@@ -60,7 +73,7 @@ public class ActivityCapture extends Activity implements SurfaceHolder.Callback 
     public static final OverlayMode OVERLAY_MODE = OverlayMode.OM_MWOVERLAY;
 
     // !!! Rects are in format: x, y, width, height !!!
-	/*public static final Rect RECT_LANDSCAPE_1D = new Rect(10, 30, 94, 10);
+    /*public static final Rect RECT_LANDSCAPE_1D = new Rect(10, 30, 94, 10);
 	public static final Rect RECT_LANDSCAPE_2D = new Rect(20, 5, 60, 90);
 	public static final Rect RECT_PORTRAIT_2D = new Rect(20, 5, 60, 90);
 	public static final Rect RECT_FULL_1D = new Rect(3, 3, 94, 94);
@@ -96,6 +109,51 @@ public class ActivityCapture extends Activity implements SurfaceHolder.Callback 
 
     private SurfaceHolder surfaceHolder;
     private boolean surfaceChanged = false;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "ActivityCapture Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.app.snipebills.snipebills/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "ActivityCapture Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.app.snipebills.snipebills/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
+    }
 
     private enum State {
         STOPPED, PREVIEW, DECODING
@@ -103,6 +161,27 @@ public class ActivityCapture extends Activity implements SurfaceHolder.Callback 
 
     private enum OverlayMode {
         OM_IMAGE, OM_MWOVERLAY, OM_NONE
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     State state = State.STOPPED;
@@ -121,14 +200,25 @@ public class ActivityCapture extends Activity implements SurfaceHolder.Callback 
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(getResources().getIdentifier("capture", "layout", package_name));
-        BarcodeScanner.MWBregisterCode(BarcodeScanner.MWB_CODE_MASK_EANUPC, " snipebillpayments@gmail.com", "D4C5563FC6F2D6B800BDD16140DA802BE95D3DE85BAB0A1AF27657A91ECE3806");
 
+        setContentView(R.layout.activity_shoppingcart);
+        BarcodeScanner.MWBregisterCode(BarcodeScanner.MWB_CODE_MASK_EANUPC, " snipebillpayments@gmail.com", "D4C5563FC6F2D6B800BDD16140DA802BE95D3DE85BAB0A1AF27657A91ECE3806");
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        // setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
         // choose code type or types you want to search for
 
         if (PDF_OPTIMIZED) {
-			/*BarcodeScanner.MWBsetDirection(BarcodeScanner.MWB_SCANDIRECTION_HORIZONTAL);
-			BarcodeScanner.MWBsetActiveCodes(BarcodeScanner.MWB_CODE_MASK_PDF);
+            /*BarcodeScanner.MWBsetDirection(BarcodeScanner.MWB_SCANDIRECTION_HORIZONTAL);
+            BarcodeScanner.MWBsetActiveCodes(BarcodeScanner.MWB_CODE_MASK_PDF);
 			BarcodeScanner.MWBsetScanningRect(BarcodeScanner.MWB_CODE_MASK_PDF, RECT_LANDSCAPE_1D);*/
         } else {
             // Our sample app is configured by default to search both
@@ -205,10 +295,11 @@ public class ActivityCapture extends Activity implements SurfaceHolder.Callback 
             }
         });
 
+
         //	zoomButton = (ImageButton) findViewById(R.id.zoomButton);
 
 		/*zoomButton.setOnClickListener(new OnClickListener() {
-			@Override
+            @Override
 			public void onClick(View v) {
 
 				zoomLevel++;
@@ -307,14 +398,39 @@ public class ActivityCapture extends Activity implements SurfaceHolder.Callback 
             }
         });
 
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.home, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        SurfaceView surfaceView = (SurfaceView) findViewById(getResources().getIdentifier("preview_view", "id", package_name));
-        surfaceHolder = surfaceView.getHolder();
+try {
+    SurfaceView surfaceView = (SurfaceView) findViewById(getResources().getIdentifier("preview_view", "id", package_name));
+    surfaceHolder = surfaceView.getHolder();
 
         if (OVERLAY_MODE == OverlayMode.OM_MWOVERLAY) {
             contxt = this;
@@ -345,6 +461,11 @@ public class ActivityCapture extends Activity implements SurfaceHolder.Callback 
 
         String libVersion = "Lib version: " + String.valueOf(v1) + "." + String.valueOf(v2) + "." + String.valueOf(v3);
         Toast.makeText(this, libVersion, Toast.LENGTH_LONG).show();
+}
+catch(Exception e)
+{
+    e.printStackTrace();
+}
     }
 
     @Override
@@ -748,7 +869,7 @@ public class ActivityCapture extends Activity implements SurfaceHolder.Callback 
     }
 
     private void displayFrameworkBugMessageAndExit(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+/*        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getResources().getIdentifier("app_name", "string", package_name));
         builder.setMessage(MSG_CAMERA_FRAMEWORK_BUG + message);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -756,7 +877,7 @@ public class ActivityCapture extends Activity implements SurfaceHolder.Callback 
                 finish();
             }
         });
-        builder.show();
+        builder.show();*/
     }
 
 }
